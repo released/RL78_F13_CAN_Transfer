@@ -5,6 +5,18 @@ non-destructive `Custom Transfer` workflow. It verifies the complete
 PC -> F24 host -> CAN -> MCU device request/response path without erasing or
 writing flash.
 
+## Public examples
+
+- [This CAN Transfer benchmark](https://github.com/released/RL78_F13_CAN_Transfer).
+- [CAN Boot project](https://github.com/released/RL78_F13_Boot_loader_CAN).
+- [Matching CAN App project](https://github.com/released/RL78_F13_Boot_loader_CAN_app).
+- [Tool and bridge operating guide](https://released.github.io/slide_isp_tool_for_RL78/).
+- [Boot/App porting guide](https://released.github.io/slide_boot_loader_for_RL78/#boot-app-porting).
+
+Transfer is the standalone non-destructive transport test, not the Boot/App
+update image. For firmware updates, obtain both Boot and App as sibling
+directories using their repository names; see the linked porting guide.
+
 ## UART comparison trace
 
 `CAN_TRANSFER_UART_TRACE_ENABLE` in `can_transfer_config.h` defaults to `1`.
@@ -63,7 +75,7 @@ For a comparison capture:
 1. Flash this project with CS+/E2 Lite, leave debug mode, and disconnect the
    programmer as required by the board setup.
 2. Capture the F13 UART0 output to a text file.
-3. In CANUpgradeTool, select `Custom Transfer`, enable
+3. In FirmwareUpgradeTool, select `Custom Transfer`, enable
    `Detailed trace (slower)`, select `Start Log`, then run discovery and the
    transfer test.
 4. Compare each PC `TRACE CAN TX id=0x710` line with the target
