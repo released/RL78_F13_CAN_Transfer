@@ -1,11 +1,11 @@
 /***********************************************************************************************************************
-* File Name    : r_cg_cgc.h
-* Version      : CodeGenerator for RL78/F14 V2.02.01.03 [30 Jan 2015]
-* Device(s)    : R5F10PPJ
-* Tool-Chain   : CA78K0R
-* Description  : This file implements device driver for CGC module.
-* Creation Date: 2015/7/11
-***********************************************************************************************************************/
+ * File Name    : r_cg_cgc.h
+ * Version      : CodeGenerator for RL78/F14 V2.02.01.03 [30 Jan 2015]
+ * Device(s)    : R5F10PPJ
+ * Tool-Chain   : CA78K0R
+ * Description  : This file implements device driver for CGC module.
+ * Creation Date: 2015/7/11
+ ***********************************************************************************************************************/
 
 #ifndef R_RL78_CAN_H
 #define R_RL78_CAN_H
@@ -17,12 +17,10 @@ Macro definitions (Register bit)
     Clock operation mode control register (CMC)
 */
 
-
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-//#define CGC_PLLWAITTIME             (800U) /* change the waiting time according to the system */
-
+// #define CGC_PLLWAITTIME             (800U) /* change the waiting time according to the system */
 
 /***********************************************************************************************************************
 Typedef definitions

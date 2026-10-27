@@ -1,0 +1,7 @@
+# Keep the programmer image; other build outputs remain local.
+/DefaultBuild/*
+!/DefaultBuild/RL78_F13_CAN_Transfer.mot
+/tmp/
+*.mtud
+*.obj
+QualityReport*.txt

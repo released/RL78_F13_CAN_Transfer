@@ -98,3 +98,12 @@ measurement.
 
 Always inspect the final CS+ summary. A process exit code alone is not proof of
 a successful CC-RL build.
+
+## User code entry
+
+`custom_func.c` provides `hardware_init()` for initialization and `loop()` for
+foreground service. Add application initialization and foreground work through
+these callbacks, retaining the existing communication service calls.
+The selected main/startup adapter owns entry and handoff. Generated peripheral
+files remain under `src/`; retain the project's MTPJ source selection when using
+Code Generator or Smart Configurator, then rebuild to validate the image and vectors.

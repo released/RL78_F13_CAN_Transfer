@@ -1,35 +1,35 @@
-/******************************************************************************* 
-* DISCLAIMER 
-* This software is supplied by Renesas Electronics Corporation and is only  
-* intended for use with Renesas products. No other uses are authorized. This  
-* software is owned by Renesas Electronics Corporation and is protected under 
-* all applicable laws, including copyright laws. 
-* THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING 
-* THIS SOFTWARE, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING BUT NOT 
-* LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE  
-* AND NON-INFRINGEMENT. ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED. 
-* TO THE MAXIMUM EXTENT PERMITTED NOT PROHIBITED BY LAW, NEITHER RENESAS  
-* ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES SHALL BE LIABLE  
-* FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR 
-* ANY REASON RELATED TO THIS SOFTWARE, EVEN IF RENESAS OR ITS AFFILIATES HAVE 
-* BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. 
-* Renesas reserves the right, without notice, to make changes to this software 
-* and to discontinue the availability of this software. By using this software, 
-* you agree to the additional terms and conditions found by accessing the  
-* following link: 
-* http://www.renesas.com/disclaimer 
-* 
-* Copyright (C) 2013 Renesas Electronics Corporation. All rights reserved.     
-*******************************************************************************/
-/******************************************************************************* 
-* File Name    : r_rl78_can_drv.c 
-* Version      : 1.0 
-* Description  : This is source file for CAN driver code.
-******************************************************************************/ 
-/***************************************************************************** 
-* History      : DD.MM.YYYY Version Description 
-*              : 29.03.2013 1.00     First Release 
-******************************************************************************/
+/*******************************************************************************
+ * DISCLAIMER
+ * This software is supplied by Renesas Electronics Corporation and is only
+ * intended for use with Renesas products. No other uses are authorized. This
+ * software is owned by Renesas Electronics Corporation and is protected under
+ * all applicable laws, including copyright laws.
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING
+ * THIS SOFTWARE, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING BUT NOT
+ * LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NON-INFRINGEMENT. ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED.
+ * TO THE MAXIMUM EXTENT PERMITTED NOT PROHIBITED BY LAW, NEITHER RENESAS
+ * ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES SHALL BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR
+ * ANY REASON RELATED TO THIS SOFTWARE, EVEN IF RENESAS OR ITS AFFILIATES HAVE
+ * BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ * Renesas reserves the right, without notice, to make changes to this software
+ * and to discontinue the availability of this software. By using this software,
+ * you agree to the additional terms and conditions found by accessing the
+ * following link:
+ * http://www.renesas.com/disclaimer
+ *
+ * Copyright (C) 2013 Renesas Electronics Corporation. All rights reserved.
+ *******************************************************************************/
+/*******************************************************************************
+ * File Name    : r_rl78_can_drv.c
+ * Version      : 1.0
+ * Description  : This is source file for CAN driver code.
+ ******************************************************************************/
+/*****************************************************************************
+ * History      : DD.MM.YYYY Version Description
+ *              : 29.03.2013 1.00     First Release
+ ******************************************************************************/
 
 /*****************************************************************************
  Includes   <System Includes> , "Project Includes"
@@ -47,9 +47,9 @@
  Macro definitions
  *****************************************************************************/
 
-#define CAN_FIFO_PTR_INC                    0xffUL
+#define CAN_FIFO_PTR_INC 0xffUL
 
-#define CAN_8_BITS_MASK                     0x00FFU
+#define CAN_8_BITS_MASK 0x00FFU
 
 /*****************************************************************************
  Private variables and functions
@@ -59,17 +59,17 @@
  Exported global variables and functions (to be accessed by other files)
  *****************************************************************************/
 
-/****************************************************************************** 
-* Function Name: R_Can_Init
-* Description  : Initialize CAN controller after reset
-* Arguments    : none 
-* Return Value : CAN_RTN_OK - 
-*                    normal completion
-*                CAN_RTN_RAM_INIT -
-*                    CAN RAM initializing
-*                CAN_RTN_MODE_WAIT -
-*                    wait to change global mode or channel mode
-******************************************************************************/
+/******************************************************************************
+ * Function Name: R_Can_Init
+ * Description  : Initialize CAN controller after reset
+ * Arguments    : none
+ * Return Value : CAN_RTN_OK -
+ *                    normal completion
+ *                CAN_RTN_RAM_INIT -
+ *                    CAN RAM initializing
+ *                CAN_RTN_MODE_WAIT -
+ *                    wait to change global mode or channel mode
+ ******************************************************************************/
 Can_RtnType R_CAN_Init(void)
 {
 
@@ -113,7 +113,7 @@ Can_RtnType R_CAN_Init(void)
     /* ==== Rx rule setting ==== */
 #if CAN_RX_RULE_NUM > 0
     {
-        volatile __near can_rxrule_sfr_t * p_RxRuleSfr;
+        volatile __near can_rxrule_sfr_t *p_RxRuleSfr;
         uint16_t temp_rpage;
         uint16_t rxrule_idx;
 
@@ -133,10 +133,10 @@ Can_RtnType R_CAN_Init(void)
             /* Set a single Rx rule */
             p_RxRuleSfr->IDL = g_rxrule_table[rxrule_idx][0];
             p_RxRuleSfr->IDH = g_rxrule_table[rxrule_idx][1];
-            p_RxRuleSfr->ML  = g_rxrule_table[rxrule_idx][2];
-            p_RxRuleSfr->MH  = g_rxrule_table[rxrule_idx][3];
-            p_RxRuleSfr->PL  = g_rxrule_table[rxrule_idx][4];
-            p_RxRuleSfr->PH  = g_rxrule_table[rxrule_idx][5];
+            p_RxRuleSfr->ML = g_rxrule_table[rxrule_idx][2];
+            p_RxRuleSfr->MH = g_rxrule_table[rxrule_idx][3];
+            p_RxRuleSfr->PL = g_rxrule_table[rxrule_idx][4];
+            p_RxRuleSfr->PH = g_rxrule_table[rxrule_idx][5];
 
             /* Next sfr */
             p_RxRuleSfr++;
@@ -172,23 +172,22 @@ Can_RtnType R_CAN_Init(void)
     return CAN_RTN_OK;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_GlobalStart
-* Description  : Start global operation
-* Arguments    : none 
-* Return Value : CAN_RTN_OK -
-*                    normal completion
-*                CAN_RTN_MODE_WAIT -
-*                    wait to change global mode
-******************************************************************************/
+/******************************************************************************
+ * Function Name: R_CAN_GlobalStart
+ * Description  : Start global operation
+ * Arguments    : none
+ * Return Value : CAN_RTN_OK -
+ *                    normal completion
+ *                CAN_RTN_MODE_WAIT -
+ *                    wait to change global mode
+ ******************************************************************************/
 Can_RtnType R_CAN_GlobalStart(void)
 {
 
     /* ==== switch to global operation mode from global reset mode ==== */
     if ((GSTS & CAN_GLB_RST_STS_BIT_ON) != 0U)
     {
-        GCTRL = ((GCTRL & (uint16_t)~CAN_GLB_MODE_BITS_ON) |
-                    CAN_GLB_OPERATION_MODE);
+        GCTRL = ((GCTRL & (uint16_t)~CAN_GLB_MODE_BITS_ON) | CAN_GLB_OPERATION_MODE);
         if ((GSTS & CAN_GLB_RST_STS_BIT_ON) != 0U)
         {
             return CAN_RTN_MODE_WAIT;
@@ -219,15 +218,15 @@ Can_RtnType R_CAN_GlobalStart(void)
     return CAN_RTN_OK;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_ChStart_CH0
-* Description  : Start channel operation (Channel 0)
-* Arguments    : none
-* Return Value : CAN_RTN_OK -
-*                    normal completion
-*                CAN_RTN_MODE_WAIT -
-*                    wait to change channel mode
-******************************************************************************/
+/******************************************************************************
+ * Function Name: R_CAN_ChStart_CH0
+ * Description  : Start channel operation (Channel 0)
+ * Arguments    : none
+ * Return Value : CAN_RTN_OK -
+ *                    normal completion
+ *                CAN_RTN_MODE_WAIT -
+ *                    wait to change channel mode
+ ******************************************************************************/
 Can_RtnType R_CAN_ChStart_CH0(void)
 {
     /* ---- switch to channel operation mode ---- */
@@ -249,22 +248,21 @@ Can_RtnType R_CAN_ChStart_CH0(void)
     return CAN_RTN_OK;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_TrmByTxBuf_CH0
-* Description  : Transmit a frame by Tx buffer (Channel 0)
-* Arguments    : txbuf_idx -
-*                    Tx buffer index
-*                pFrame -
-*                    pointer to frame to be transmitted
-* Return Value : CAN_RTN_OK -
-*                    normal completion
-*                CAN_RTN_STS_ERROR -
-*                    failure to clear Tx buffer status
-*                CAN_RTN_ARG_ERROR -
-*                    invalid argument specification
-******************************************************************************/
-Can_RtnType R_CAN_TrmByTxBuf_CH0(can_txbuf_t txbuf_idx,
-                                 const can_frame_t * pFrame)
+/******************************************************************************
+ * Function Name: R_CAN_TrmByTxBuf_CH0
+ * Description  : Transmit a frame by Tx buffer (Channel 0)
+ * Arguments    : txbuf_idx -
+ *                    Tx buffer index
+ *                pFrame -
+ *                    pointer to frame to be transmitted
+ * Return Value : CAN_RTN_OK -
+ *                    normal completion
+ *                CAN_RTN_STS_ERROR -
+ *                    failure to clear Tx buffer status
+ *                CAN_RTN_ARG_ERROR -
+ *                    invalid argument specification
+ ******************************************************************************/
+Can_RtnType R_CAN_TrmByTxBuf_CH0(can_txbuf_t txbuf_idx, const can_frame_t *pFrame)
 {
 #if defined(__CHECK__)
     /* ----  Check Tx buffer index ---- */
@@ -276,7 +274,7 @@ Can_RtnType R_CAN_TrmByTxBuf_CH0(can_txbuf_t txbuf_idx,
 
     /* ---- Clear Tx buffer status ---- */
     {
-        volatile __near uint8_t * p_TMSTSp;
+        volatile __near uint8_t *p_TMSTSp;
 
         p_TMSTSp = CAN_ADDR_TMSTSp(txbuf_idx);
         *p_TMSTSp = 0x0U;
@@ -288,7 +286,7 @@ Can_RtnType R_CAN_TrmByTxBuf_CH0(can_txbuf_t txbuf_idx,
 
     /* ---- Store message to tx buffer ---- */
     {
-        volatile __near can_frame_sfr_t * p_TxMsgSfr;
+        volatile __near can_frame_sfr_t *p_TxMsgSfr;
         uint16_t temp_rpage;
 
         /* ---- Save value of GRWCR register ---- */
@@ -317,16 +315,16 @@ Can_RtnType R_CAN_TrmByTxBuf_CH0(can_txbuf_t txbuf_idx,
     return CAN_RTN_OK;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_AbortTrm_CH0
-* Description  : Abort a CAN transmission (Channel 0)
-* Arguments    : txbuf_idx -
-*                    Tx buffer index
-* Return Value : CAN_RTN_OK -
-*                    normal completion
-*                CAN_RTN_ARG_ERROR -
-*                    invalid argument specification
-******************************************************************************/
+/******************************************************************************
+ * Function Name: R_CAN_AbortTrm_CH0
+ * Description  : Abort a CAN transmission (Channel 0)
+ * Arguments    : txbuf_idx -
+ *                    Tx buffer index
+ * Return Value : CAN_RTN_OK -
+ *                    normal completion
+ *                CAN_RTN_ARG_ERROR -
+ *                    invalid argument specification
+ ******************************************************************************/
 Can_RtnType R_CAN_AbortTrm_CH0(can_txbuf_t txbuf_idx)
 {
 #if defined(__CHECK__)
@@ -343,30 +341,30 @@ Can_RtnType R_CAN_AbortTrm_CH0(can_txbuf_t txbuf_idx)
     return CAN_RTN_OK;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_CheckTxBufResult_CH0
-* Description  : Read the result of transmission from Tx buffer (Channel 0)
-* Arguments    : txbuf_idx -
-*                    Tx buffer index
-* Return Value : CAN_RTN_TRANSMITTING -
-*                    Transmission is in progress
-*                    or no transmit request is present.
-*                CAN_RTN_TX_ABORT_OVER -
-*                    Transmit abort has been completed.
-*                CAN_RTN_TX_END -
-*                    Transmission has been completed
-*                    (without transmit abort request).
-*                CAN_RTN_TX_END_WITH_ABORT_REQ -
-*                    Transmission has been completed
-*                    (with transmit abort request).
-*                CAN_RTN_ARG_ERROR -
-*                    invalid argument specification
-******************************************************************************/
+/******************************************************************************
+ * Function Name: R_CAN_CheckTxBufResult_CH0
+ * Description  : Read the result of transmission from Tx buffer (Channel 0)
+ * Arguments    : txbuf_idx -
+ *                    Tx buffer index
+ * Return Value : CAN_RTN_TRANSMITTING -
+ *                    Transmission is in progress
+ *                    or no transmit request is present.
+ *                CAN_RTN_TX_ABORT_OVER -
+ *                    Transmit abort has been completed.
+ *                CAN_RTN_TX_END -
+ *                    Transmission has been completed
+ *                    (without transmit abort request).
+ *                CAN_RTN_TX_END_WITH_ABORT_REQ -
+ *                    Transmission has been completed
+ *                    (with transmit abort request).
+ *                CAN_RTN_ARG_ERROR -
+ *                    invalid argument specification
+ ******************************************************************************/
 Can_RtnType R_CAN_CheckTxBufResult_CH0(can_txbuf_t txbuf_idx)
 {
     Can_RtnType rtn_value;
 
-    volatile __near uint8_t * p_TMSTSp;
+    volatile __near uint8_t *p_TMSTSp;
 
 #if defined(__CHECK__)
     /* ----  Check Tx buffer index ---- */
@@ -378,8 +376,7 @@ Can_RtnType R_CAN_CheckTxBufResult_CH0(can_txbuf_t txbuf_idx)
 
     p_TMSTSp = CAN_ADDR_TMSTSp(txbuf_idx);
 
-    rtn_value = (Can_RtnType)((*p_TMSTSp & CAN_TXBUF_RSLT_BITS_ON)
-                              >> CAN_TXBUF_RSLT_BITS_POS);
+    rtn_value = (Can_RtnType)((*p_TMSTSp & CAN_TXBUF_RSLT_BITS_ON) >> CAN_TXBUF_RSLT_BITS_POS);
 
     /* ---- Tx transmission completed/abort? ---- */
     if (rtn_value != CAN_RTN_TRANSMITTING)
@@ -391,23 +388,23 @@ Can_RtnType R_CAN_CheckTxBufResult_CH0(can_txbuf_t txbuf_idx)
     return rtn_value;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_TrmByTRFIFO0_CH0
-* Description  : Transmit a frame by common (Tx/Rx) FIFO 0 (Channel 0)
-* Arguments    : ch_idx -
-*                    channel index
-*                trfifo_idx -
-*                    Tx/Rx FIFO index
-*                pFrame -
-*                    pointer to frame to be transmitted
-* Return Value : CAN_RTN_OK -
-*                    Frame is successfully pushed into FIFO.
-*                CAN_RTN_FIFO_FULL -
-*                    Specified FIFO is full.
-*                CAN_RTN_ARG_ERROR -
-*                    invalid argument specification
-******************************************************************************/
-Can_RtnType R_CAN_TrmByTRFIFO0_CH0(const can_frame_t * pFrame)
+/******************************************************************************
+ * Function Name: R_CAN_TrmByTRFIFO0_CH0
+ * Description  : Transmit a frame by common (Tx/Rx) FIFO 0 (Channel 0)
+ * Arguments    : ch_idx -
+ *                    channel index
+ *                trfifo_idx -
+ *                    Tx/Rx FIFO index
+ *                pFrame -
+ *                    pointer to frame to be transmitted
+ * Return Value : CAN_RTN_OK -
+ *                    Frame is successfully pushed into FIFO.
+ *                CAN_RTN_FIFO_FULL -
+ *                    Specified FIFO is full.
+ *                CAN_RTN_ARG_ERROR -
+ *                    invalid argument specification
+ ******************************************************************************/
+Can_RtnType R_CAN_TrmByTRFIFO0_CH0(const can_frame_t *pFrame)
 {
 #if defined(__CHECK__)
     /* ----  Check Tx/Rx FIFO 0 mode ---- */
@@ -452,25 +449,25 @@ Can_RtnType R_CAN_TrmByTRFIFO0_CH0(const can_frame_t * pFrame)
     return CAN_RTN_OK;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_ReadRxBuffer
-* Description  : Read message from Rx buffer
-* Arguments    : p_rxbuf_idx -
-*                    pointer to Rx buffer that receives frame
-*                pFrame -
-*                    pointer to stored frame position
-* Return Value : CAN_RTN_OK -
-*                    A frame is successfully read out.
-*                CAN_RTN_BUFFER_EMPTY -
-*                    No frame is read out.
-*                CAN_RTN_STS_ERROR -
-*                    failure to clear Rx complete flag
-*                CAN_RTN_OVERWRITE -
-*                    A frame is overwritten.
-******************************************************************************/
-Can_RtnType R_CAN_ReadRxBuffer(uint8_t * p_rxbuf_idx, can_frame_t * pFrame)
+/******************************************************************************
+ * Function Name: R_CAN_ReadRxBuffer
+ * Description  : Read message from Rx buffer
+ * Arguments    : p_rxbuf_idx -
+ *                    pointer to Rx buffer that receives frame
+ *                pFrame -
+ *                    pointer to stored frame position
+ * Return Value : CAN_RTN_OK -
+ *                    A frame is successfully read out.
+ *                CAN_RTN_BUFFER_EMPTY -
+ *                    No frame is read out.
+ *                CAN_RTN_STS_ERROR -
+ *                    failure to clear Rx complete flag
+ *                CAN_RTN_OVERWRITE -
+ *                    A frame is overwritten.
+ ******************************************************************************/
+Can_RtnType R_CAN_ReadRxBuffer(uint8_t *p_rxbuf_idx, can_frame_t *pFrame)
 {
-    uint8_t  buf_idx;
+    uint8_t buf_idx;
     uint16_t temp_rbrcf;
     uint16_t pattern;
 
@@ -505,7 +502,7 @@ Can_RtnType R_CAN_ReadRxBuffer(uint8_t * p_rxbuf_idx, can_frame_t * pFrame)
 
     /* ---- Read out message from Rx buffer ---- */
     {
-        volatile __near can_frame_sfr_t * p_RxBufSfr;
+        volatile __near can_frame_sfr_t *p_RxBufSfr;
         uint16_t temp_rpage;
 
         /* ---- Save value of GRWCR register ---- */
@@ -518,7 +515,7 @@ Can_RtnType R_CAN_ReadRxBuffer(uint8_t * p_rxbuf_idx, can_frame_t * pFrame)
         p_RxBufSfr = CAN_ADDR_RMIDLp(*p_rxbuf_idx);
         ((can_frame_sfr_t *)pFrame)->IDL = p_RxBufSfr->IDL;
         ((can_frame_sfr_t *)pFrame)->IDH = p_RxBufSfr->IDH;
-        ((can_frame_sfr_t *)pFrame)->TS  = p_RxBufSfr->TS; 
+        ((can_frame_sfr_t *)pFrame)->TS = p_RxBufSfr->TS;
         ((can_frame_sfr_t *)pFrame)->PTR = p_RxBufSfr->PTR;
         ((can_frame_sfr_t *)pFrame)->DF0 = p_RxBufSfr->DF0;
         ((can_frame_sfr_t *)pFrame)->DF1 = p_RxBufSfr->DF1;
@@ -538,32 +535,37 @@ Can_RtnType R_CAN_ReadRxBuffer(uint8_t * p_rxbuf_idx, can_frame_t * pFrame)
     return CAN_RTN_OK;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_ReadRxFIFO
-* Description  : Read message from Rx FIFO
-* Arguments    : rxfifo_idx -
-*                    Rx FIFO index
-*                pFrame -
-*                    pointer to stored frame position
-* Return Value : CAN_RTN_OK -
-*                    A frame is successfully read out.
-*                CAN_RTN_OK_WITH_LOST -
-*                    A frame is successfully read out (with message lost).
-*                CAN_RTN_BUFFER_EMPTY -
-*                    No frame is read out.
-*                CAN_RTN_ARG_ERROR -
-*                    invalid argument specification
-******************************************************************************/
+/******************************************************************************
+ * Function Name: R_CAN_ReadRxFIFO
+ * Description  : Read message from Rx FIFO
+ * Arguments    : rxfifo_idx -
+ *                    Rx FIFO index
+ *                pFrame -
+ *                    pointer to stored frame position
+ * Return Value : CAN_RTN_OK -
+ *                    A frame is successfully read out.
+ *                CAN_RTN_OK_WITH_LOST -
+ *                    A frame is successfully read out (with message lost).
+ *                CAN_RTN_BUFFER_EMPTY -
+ *                    No frame is read out.
+ *                CAN_RTN_ARG_ERROR -
+ *                    invalid argument specification
+ ******************************************************************************/
 extern Can_RtnType R_CAN_ReadRxFIFO0(can_frame_t *);
 extern Can_RtnType R_CAN_ReadRxFIFO1(can_frame_t *);
-Can_RtnType R_CAN_ReadRxFIFO(can_rxfifo_t rxfifo_idx, can_frame_t * pFrame)
+Can_RtnType R_CAN_ReadRxFIFO(can_rxfifo_t rxfifo_idx, can_frame_t *pFrame)
 {
-    if (rxfifo_idx == 0) {
+    if (rxfifo_idx == 0)
+    {
         return R_CAN_ReadRxFIFO0(pFrame);
-    } else if (rxfifo_idx == 1) {
+    }
+    else if (rxfifo_idx == 1)
+    {
         return R_CAN_ReadRxFIFO1(pFrame);
 #if defined(__CHECK__)
-    } else {
+    }
+    else
+    {
         return CAN_RTN_ARG_ERROR;
 #endif
     }
@@ -571,23 +573,23 @@ Can_RtnType R_CAN_ReadRxFIFO(can_rxfifo_t rxfifo_idx, can_frame_t * pFrame)
     return CAN_RTN_OK;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_ReadRxFIFO0
-* Description  : Read message from Rx FIFO 0
-* Arguments    : pFrame -
-*                    pointer to stored frame position
-* Return Value : CAN_RTN_OK -
-*                    A frame is successfully read out.
-*                CAN_RTN_OK_WITH_LOST -
-*                    A frame is successfully read out (with message lost).
-*                CAN_RTN_BUFFER_EMPTY -
-*                    No frame is read out.
-*                CAN_RTN_ARG_ERROR -
-*                    invalid argument specification
-******************************************************************************/
-Can_RtnType R_CAN_ReadRxFIFO0(can_frame_t * pFrame)
+/******************************************************************************
+ * Function Name: R_CAN_ReadRxFIFO0
+ * Description  : Read message from Rx FIFO 0
+ * Arguments    : pFrame -
+ *                    pointer to stored frame position
+ * Return Value : CAN_RTN_OK -
+ *                    A frame is successfully read out.
+ *                CAN_RTN_OK_WITH_LOST -
+ *                    A frame is successfully read out (with message lost).
+ *                CAN_RTN_BUFFER_EMPTY -
+ *                    No frame is read out.
+ *                CAN_RTN_ARG_ERROR -
+ *                    invalid argument specification
+ ******************************************************************************/
+Can_RtnType R_CAN_ReadRxFIFO0(can_frame_t *pFrame)
 {
-    uint16_t    temp_status;
+    uint16_t temp_status;
     Can_RtnType rtn_value;
 
 #if defined(__CHECK__)
@@ -631,7 +633,7 @@ Can_RtnType R_CAN_ReadRxFIFO0(can_frame_t * pFrame)
         /* ---- Read frame data ---- */
         ((can_frame_sfr_t *)pFrame)->IDL = RFIDL0;
         ((can_frame_sfr_t *)pFrame)->IDH = RFIDH0;
-        ((can_frame_sfr_t *)pFrame)->TS  = RFTS0; 
+        ((can_frame_sfr_t *)pFrame)->TS = RFTS0;
         ((can_frame_sfr_t *)pFrame)->PTR = RFPTR0;
         ((can_frame_sfr_t *)pFrame)->DF0 = RFDF00;
         ((can_frame_sfr_t *)pFrame)->DF1 = RFDF10;
@@ -648,23 +650,23 @@ Can_RtnType R_CAN_ReadRxFIFO0(can_frame_t * pFrame)
     return rtn_value;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_ReadRxFIFO1
-* Description  : Read message from Rx FIFO 1
-* Arguments    : pFrame -
-*                    pointer to stored frame position
-* Return Value : CAN_RTN_OK -
-*                    A frame is successfully read out.
-*                CAN_RTN_OK_WITH_LOST -
-*                    A frame is successfully read out (with message lost).
-*                CAN_RTN_BUFFER_EMPTY -
-*                    No frame is read out.
-*                CAN_RTN_ARG_ERROR -
-*                    invalid argument specification
-******************************************************************************/
-Can_RtnType R_CAN_ReadRxFIFO1(can_frame_t * pFrame)
+/******************************************************************************
+ * Function Name: R_CAN_ReadRxFIFO1
+ * Description  : Read message from Rx FIFO 1
+ * Arguments    : pFrame -
+ *                    pointer to stored frame position
+ * Return Value : CAN_RTN_OK -
+ *                    A frame is successfully read out.
+ *                CAN_RTN_OK_WITH_LOST -
+ *                    A frame is successfully read out (with message lost).
+ *                CAN_RTN_BUFFER_EMPTY -
+ *                    No frame is read out.
+ *                CAN_RTN_ARG_ERROR -
+ *                    invalid argument specification
+ ******************************************************************************/
+Can_RtnType R_CAN_ReadRxFIFO1(can_frame_t *pFrame)
 {
-    uint16_t    temp_status;
+    uint16_t temp_status;
     Can_RtnType rtn_value;
 
 #if defined(__CHECK__)
@@ -708,7 +710,7 @@ Can_RtnType R_CAN_ReadRxFIFO1(can_frame_t * pFrame)
         /* ---- Read frame data ---- */
         ((can_frame_sfr_t *)pFrame)->IDL = RFIDL1;
         ((can_frame_sfr_t *)pFrame)->IDH = RFIDH1;
-        ((can_frame_sfr_t *)pFrame)->TS  = RFTS1; 
+        ((can_frame_sfr_t *)pFrame)->TS = RFTS1;
         ((can_frame_sfr_t *)pFrame)->PTR = RFPTR1;
         ((can_frame_sfr_t *)pFrame)->DF0 = RFDF01;
         ((can_frame_sfr_t *)pFrame)->DF1 = RFDF11;
@@ -725,27 +727,27 @@ Can_RtnType R_CAN_ReadRxFIFO1(can_frame_t * pFrame)
     return rtn_value;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_ReadTRFIFO
-* Description  : Read message from common (Tx/Rx) FIFO
-* Arguments    : ch_idx -
-*                    channel index
-*                trfifo_idx -
-*                    common (Tx/Rx) FIFO index
-*                pFrame -
-*                    pointer to stored frame position
-* Return Value : CAN_RTN_OK -
-*                    A frame is successfully read out.
-*                CAN_RTN_OK_WITH_LOST -
-*                    A frame is successfully read out (with message lost).
-*                CAN_RTN_BUFFER_EMPTY -
-*                    No frame is read out.
-*                CAN_RTN_ARG_ERROR -
-*                    invalid argument specification
-******************************************************************************/
-Can_RtnType R_CAN_ReadTRFIFO0_CH0(can_frame_t * pFrame)
+/******************************************************************************
+ * Function Name: R_CAN_ReadTRFIFO
+ * Description  : Read message from common (Tx/Rx) FIFO
+ * Arguments    : ch_idx -
+ *                    channel index
+ *                trfifo_idx -
+ *                    common (Tx/Rx) FIFO index
+ *                pFrame -
+ *                    pointer to stored frame position
+ * Return Value : CAN_RTN_OK -
+ *                    A frame is successfully read out.
+ *                CAN_RTN_OK_WITH_LOST -
+ *                    A frame is successfully read out (with message lost).
+ *                CAN_RTN_BUFFER_EMPTY -
+ *                    No frame is read out.
+ *                CAN_RTN_ARG_ERROR -
+ *                    invalid argument specification
+ ******************************************************************************/
+Can_RtnType R_CAN_ReadTRFIFO0_CH0(can_frame_t *pFrame)
 {
-    uint16_t    temp_status;
+    uint16_t temp_status;
     Can_RtnType rtn_value;
 
 #if defined(__CHECK__)
@@ -789,7 +791,7 @@ Can_RtnType R_CAN_ReadTRFIFO0_CH0(can_frame_t * pFrame)
         /* ---- Read frame data ---- */
         ((can_frame_sfr_t *)pFrame)->IDL = CFIDL0;
         ((can_frame_sfr_t *)pFrame)->IDH = CFIDH0;
-        ((can_frame_sfr_t *)pFrame)->TS  = CFTS0;
+        ((can_frame_sfr_t *)pFrame)->TS = CFTS0;
         ((can_frame_sfr_t *)pFrame)->PTR = CFPTR0;
         ((can_frame_sfr_t *)pFrame)->DF0 = CFDF00;
         ((can_frame_sfr_t *)pFrame)->DF1 = CFDF10;
@@ -806,13 +808,13 @@ Can_RtnType R_CAN_ReadTRFIFO0_CH0(can_frame_t * pFrame)
     return rtn_value;
 }
 
-/****************************************************************************** 
-* Function Name: R_CAN_ReadChStatus
-* Description  : Read channel status
-* Arguments    : none
-* Return Value : channel status (<= 0xFF) -
-*                    normal completion
-******************************************************************************/
+/******************************************************************************
+ * Function Name: R_CAN_ReadChStatus
+ * Description  : Read channel status
+ * Arguments    : none
+ * Return Value : channel status (<= 0xFF) -
+ *                    normal completion
+ ******************************************************************************/
 Can_RtnType R_CAN_ReadChStatus_CH0(void)
 {
     return (Can_RtnType)(C0STSL & CAN_8_BITS_MASK);

@@ -11,24 +11,23 @@
 /*_____ D E C L A R A T I O N S ____________________________________________*/
 
 struct flag_32bit flag_PROJ_CTL;
-#define FLAG_PROJ_TIMER_PERIOD_1000MS                 	(flag_PROJ_CTL.bit0)
-#define FLAG_PROJ_TRIG_BTN                       	    (flag_PROJ_CTL.bit1)
-#define FLAG_PROJ_REVERSE2                 	            (flag_PROJ_CTL.bit2)
-#define FLAG_PROJ_REVERSE3                    		    (flag_PROJ_CTL.bit3)
-#define FLAG_PROJ_REVERSE4                              (flag_PROJ_CTL.bit4)
-#define FLAG_PROJ_REVERSE5                              (flag_PROJ_CTL.bit5)
-#define FLAG_PROJ_REVERSE6                              (flag_PROJ_CTL.bit6)
-#define FLAG_PROJ_TIMER_PERIOD_SPECIFIC                 (flag_PROJ_CTL.bit7)
+#define FLAG_PROJ_TIMER_PERIOD_1000MS (flag_PROJ_CTL.bit0)
+#define FLAG_PROJ_TRIG_BTN (flag_PROJ_CTL.bit1)
+#define FLAG_PROJ_REVERSE2 (flag_PROJ_CTL.bit2)
+#define FLAG_PROJ_REVERSE3 (flag_PROJ_CTL.bit3)
+#define FLAG_PROJ_REVERSE4 (flag_PROJ_CTL.bit4)
+#define FLAG_PROJ_REVERSE5 (flag_PROJ_CTL.bit5)
+#define FLAG_PROJ_REVERSE6 (flag_PROJ_CTL.bit6)
+#define FLAG_PROJ_TIMER_PERIOD_SPECIFIC (flag_PROJ_CTL.bit7)
 
-
-#define FLAG_PROJ_TRIG_1                                (flag_PROJ_CTL.bit8)
-#define FLAG_PROJ_TRIG_2                                (flag_PROJ_CTL.bit9)
-#define FLAG_PROJ_TRIG_3                                (flag_PROJ_CTL.bit10)
-#define FLAG_PROJ_TRIG_4                                (flag_PROJ_CTL.bit11)
-#define FLAG_PROJ_TRIG_5                                (flag_PROJ_CTL.bit12)
-#define FLAG_PROJ_REVERSE13                             (flag_PROJ_CTL.bit13)
-#define FLAG_PROJ_REVERSE14                             (flag_PROJ_CTL.bit14)
-#define FLAG_PROJ_REVERSE15                             (flag_PROJ_CTL.bit15)
+#define FLAG_PROJ_TRIG_1 (flag_PROJ_CTL.bit8)
+#define FLAG_PROJ_TRIG_2 (flag_PROJ_CTL.bit9)
+#define FLAG_PROJ_TRIG_3 (flag_PROJ_CTL.bit10)
+#define FLAG_PROJ_TRIG_4 (flag_PROJ_CTL.bit11)
+#define FLAG_PROJ_TRIG_5 (flag_PROJ_CTL.bit12)
+#define FLAG_PROJ_REVERSE13 (flag_PROJ_CTL.bit13)
+#define FLAG_PROJ_REVERSE14 (flag_PROJ_CTL.bit14)
+#define FLAG_PROJ_REVERSE15 (flag_PROJ_CTL.bit15)
 
 /*_____ D E F I N I T I O N S ______________________________________________*/
 
@@ -55,17 +54,17 @@ bool Is_TIMER_PERIOD_1000MS_Trig(void)
 
 unsigned int get_tick(void)
 {
-	return (counter_tick);
+    return (counter_tick);
 }
 
 void set_tick(unsigned int t)
 {
-	counter_tick = t;
+    counter_tick = t;
 }
 
 void tick_counter(void)
 {
-	counter_tick++;
+    counter_tick++;
     if (get_tick() >= 60000)
     {
         set_tick(0);
@@ -74,29 +73,31 @@ void tick_counter(void)
 
 void delay_ms(unsigned int ms)
 {
-	#if 1
+#if 1
     unsigned int tickstart = get_tick();
     unsigned int wait = ms;
-	unsigned int tmp = 0;
-	
+    unsigned int tmp = 0;
+
     while (1)
     {
-		if (get_tick() > tickstart)	// tickstart = 59000 , tick_counter = 60000
-		{
-			tmp = get_tick() - tickstart;
-		}
-		else // tickstart = 59000 , tick_counter = 2048
-		{
-			tmp = 60000 -  tickstart + get_tick();
-		}		
-		
-		if (tmp > wait)
-			break;
+        if (get_tick() > tickstart) // tickstart = 59000 , tick_counter = 60000
+        {
+            tmp = get_tick() - tickstart;
+        }
+        else // tickstart = 59000 , tick_counter = 2048
+        {
+            tmp = 60000 - tickstart + get_tick();
+        }
+
+        if (tmp > wait)
+        {
+            break;
+        }
     }
-	
-	#else
-	TIMER_Delay(TIMER0, 1000*ms);
-	#endif
+
+#else
+    TIMER_Delay(TIMER0, 1000 * ms);
+#endif
 }
 
 void Timer_1ms_IRQ(void)
@@ -111,14 +112,12 @@ void Timer_1ms_IRQ(void)
     if ((get_tick() % 250) == 0)
     {
         FLAG_PROJ_TIMER_PERIOD_SPECIFIC = 1;
-    }	
+    }
 
     if ((get_tick() % 50) == 0)
     {
-
-    }	
+    }
 }
-
 
 /*
     F13 target board
@@ -134,14 +133,14 @@ void LED_Toggle(void)
 
 void loop(void)
 {
-	// static unsigned int LOG1 = 0;
+    // static unsigned int LOG1 = 0;
 
     if (Is_TIMER_PERIOD_1000MS_Trig())
     {
         reset_TIMER_PERIOD_1000MS();
 
         // printf("log(timer):%4d\r\n",LOG1++);
-        LED_Toggle();             
+        LED_Toggle();
     }
 
     if (FLAG_PROJ_TRIG_BTN)
@@ -151,58 +150,57 @@ void loop(void)
     }
 
     CAN_TransferProtocol_Process();
-
 }
 
 // F13 EVB , P137/INTP0
-void Button_Process_in_IRQ(void)    
+void Button_Process_in_IRQ(void)
 {
     FLAG_PROJ_TRIG_BTN = 1;
 }
 
 void UARTx_Process(unsigned char rxbuf)
-{    
+{
     if (rxbuf > 0x7F)
     {
         printf("invalid command\r\n");
     }
     else
     {
-        printf("press:%c(0x%02X)\r\n" , rxbuf,rxbuf);   // %c :  C99 libraries.
-        switch(rxbuf)
+        printf("press:%c(0x%02X)\r\n", rxbuf, rxbuf); // %c :  C99 libraries.
+        switch (rxbuf)
         {
-            case '1':
-                FLAG_PROJ_TRIG_1 = 1;
-                break;
-            case '2':
-                // FLAG_PROJ_TRIG_2 = 1;
-                FLAG_PROJ_TRIG_2 ^= 1;
-                break;
-            case '3':
-                // FLAG_PROJ_TRIG_3 = 1;
-                FLAG_PROJ_TRIG_3 ^= 1;
-                break;
-            case '4':
-                FLAG_PROJ_TRIG_4 = 1;
-                break;
-            case '5':
-                FLAG_PROJ_TRIG_5 = 1;
-                break;
+        case '1':
+            FLAG_PROJ_TRIG_1 = 1;
+            break;
+        case '2':
+            // FLAG_PROJ_TRIG_2 = 1;
+            FLAG_PROJ_TRIG_2 ^= 1;
+            break;
+        case '3':
+            // FLAG_PROJ_TRIG_3 = 1;
+            FLAG_PROJ_TRIG_3 ^= 1;
+            break;
+        case '4':
+            FLAG_PROJ_TRIG_4 = 1;
+            break;
+        case '5':
+            FLAG_PROJ_TRIG_5 = 1;
+            break;
 
-            case 'X':
-            case 'x':
-                RL78_soft_reset(7);
-                break;
-            case 'Z':
-            case 'z':
-                RL78_soft_reset(1);
-                break;
+        case 'X':
+        case 'x':
+            RL78_soft_reset(7);
+            break;
+        case 'Z':
+        case 'z':
+            RL78_soft_reset(1);
+            break;
         }
     }
 }
 
 /*
-    Reset Control Flag Register (RESF) 
+    Reset Control Flag Register (RESF)
     BIT7 : TRAP
     BIT6 : 0
     BIT5 : 0
@@ -216,84 +214,83 @@ void check_reset_source(void)
 {
     /*
         Internal reset request by execution of illegal instruction
-        0  Internal reset request is not generated, or the RESF register is cleared. 
-        1  Internal reset request is generated. 
+        0  Internal reset request is not generated, or the RESF register is cleared.
+        1  Internal reset request is generated.
     */
     uint8_t src = RESF;
     printf("Reset Source <0x%08X>\r\n", src);
 
-    #if 1   //DEBUG , list reset source
+#if 1 // DEBUG , list reset source
     if (src & BIT0)
     {
-        printf("0)voltage detector (LVD)\r\n");       
+        printf("0)voltage detector (LVD)\r\n");
     }
     if (src & BIT1)
     {
-        printf("1)illegal-memory access\r\n");       
+        printf("1)illegal-memory access\r\n");
     }
     if (src & BIT2)
     {
-        printf("2)EMPTY\r\n");       
+        printf("2)EMPTY\r\n");
     }
     if (src & BIT3)
     {
-        printf("3)EMPTY\r\n");       
+        printf("3)EMPTY\r\n");
     }
     if (src & BIT4)
     {
-        printf("4)watchdog timer (WDT) or clock monitor\r\n");       
+        printf("4)watchdog timer (WDT) or clock monitor\r\n");
     }
     if (src & BIT5)
     {
-        printf("5)EMPTY\r\n");       
+        printf("5)EMPTY\r\n");
     }
     if (src & BIT6)
     {
-        printf("6)EMPTY\r\n");       
+        printf("6)EMPTY\r\n");
     }
     if (src & BIT7)
     {
-        printf("7)execution of illegal instruction\r\n");       
+        printf("7)execution of illegal instruction\r\n");
     }
-    #endif
-
+#endif
 }
 
 /*
     7:Internal reset by execution of illegal instruction
     1:Internal reset by illegal-memory access
 */
-//perform sofware reset
+// perform sofware reset
 void _reset_by_illegal_instruction(void)
 {
     static const unsigned char illegal_Instruction = 0xFF;
-    void (*dummy) (void) = (void (*)(void))&illegal_Instruction;
+    void (*dummy)(void) = (void (*)(void))&illegal_Instruction;
     dummy();
 }
 void _reset_by_illegal_memory_access(void)
 {
-    #if 1
+#if 1
     const unsigned char ILLEGAL_ACCESS_ON = 0x80;
     IAWCTL |= ILLEGAL_ACCESS_ON;            // switch IAWEN on (default off)
-    *(__far volatile char *)0x00000 = 0x00; //write illegal address 0x00000(RESET VECTOR)
-    #else
-    signed char __far* a;                   // Create a far-Pointer
-    IAWCTL |= _80_CGC_ILLEGAL_ACCESS_ON;    // switch IAWEN on (default off)
-    a = (signed char __far*) 0x0000;        // Point to 0x000000 (FLASH-ROM area)
+    *(__far volatile char *)0x00000 = 0x00; // write illegal address 0x00000(RESET VECTOR)
+#else
+    signed char __far *a;                // Create a far-Pointer
+    IAWCTL |= _80_CGC_ILLEGAL_ACCESS_ON; // switch IAWEN on (default off)
+    a = (signed char __far *)0x0000;     // Point to 0x000000 (FLASH-ROM area)
     *a = 0;
-    #endif
+#endif
 }
 
 void RL78_soft_reset(unsigned char flag)
 {
-    switch(flag)
+    switch (flag)
     {
-        case 7: // do not use under debug mode
-            _reset_by_illegal_instruction();        
-            break;
-        case 1:
-            _reset_by_illegal_memory_access();
-            break;
+    case 7: // do not use under debug mode
+        _reset_by_illegal_instruction();
+        break;
+    case 1:
+        _reset_by_illegal_memory_access();
+        break;
     }
 }
 
@@ -301,13 +298,12 @@ void RL78_soft_reset(unsigned char flag)
 int __far putchar(int c)
 {
     // F13 , UART0
-    STMK0 = 1U;    /* disable INTST0 interrupt */
+    STMK0 = 1U; /* disable INTST0 interrupt */
     SDR00L = (unsigned char)c;
-    while(STIF0 == 0)
+    while (STIF0 == 0)
     {
-
     }
-    STIF0 = 0U;    /* clear INTST0 interrupt flag */
+    STIF0 = 0U; /* clear INTST0 interrupt flag */
     return c;
 }
 
@@ -317,11 +313,11 @@ void hardware_init(void)
     Can_RtnType can_status;
 
     // const unsigned char indicator[] = "hardware_init";
-    EI();   //BSP_EI();
-    R_UART0_Start();            // UART , P15 , P16
-    R_TAU0_Channel1_Start();  
-    R_INTC0_Start();            // BUTTON , P137 
-    
+    EI();            // BSP_EI();
+    R_UART0_Start(); // UART , P15 , P16
+    R_TAU0_Channel1_Start();
+    R_INTC0_Start(); // BUTTON , P137
+
     // RL78 F13 EVB - CAN transceiver PIN#8 , pull low
     P1_bit.no2 = 0;
     can_result = R_CAN_Create(); /* CAN, P1.0/CTXD0 and P1.1/CRXD0. */
@@ -329,13 +325,13 @@ void hardware_init(void)
 
     can_status = R_CAN_ReadChStatus(CAN_CH0);
     printf("CAN init: %s result=0x%04X channel_status=0x%02X\r\n",
-           (can_result == CAN_RTN_OK) ? "OK" : "FAIL",
-           (unsigned int)can_result, (unsigned int)can_status);
-    printf("CAN config: Classical 500K request=0x%03X response=0x%03X filter=0x%03X/0x7FF STB=P12_LOW\r\n",
-           (unsigned int)CAN_TRANSFER_REQUEST_ID,
-           (unsigned int)CAN_TRANSFER_RESPONSE_ID,
-           (unsigned int)CAN_TRANSFER_RX_RULE_ID_LOW);
-    
+           (can_result == CAN_RTN_OK) ? "OK" : "FAIL", (unsigned int)can_result,
+           (unsigned int)can_status);
+    printf(
+        "CAN config: Classical 500K request=0x%03X response=0x%03X filter=0x%03X/0x7FF STB=P12_LOW\r\n",
+        (unsigned int)CAN_TRANSFER_REQUEST_ID, (unsigned int)CAN_TRANSFER_RESPONSE_ID,
+        (unsigned int)CAN_TRANSFER_RX_RULE_ID_LOW);
+
     // check_reset_source();
-    printf("%s finish\r\n\r\n",__func__);
+    printf("%s finish\r\n\r\n", __func__);
 }
