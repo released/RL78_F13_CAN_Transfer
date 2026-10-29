@@ -1,4 +1,9 @@
 /*_____ I N C L U D E S ____________________________________________________*/
+/* Project/API reading notes: Project-owned initialization and foreground work.
+ * The selected main/startup adapter calls hardware_init() once and loop() repeatedly.
+ * Keep application changes here so generated entry sources remain replaceable; lower-level APIs
+ * live in this project's hal directories.
+ */
 #include <stdio.h>
 
 #include "inc_main.h"
@@ -131,6 +136,10 @@ void LED_Toggle(void)
     P6_bit.no7 = ~P6_bit.no7;
 }
 
+/* Foreground service point called repeatedly by the selected main adapter.
+ * Keep protocol/application work and text logging bounded so pending traffic and deferred actions
+ * can continue.
+ */
 void loop(void)
 {
     // static unsigned int LOG1 = 0;
@@ -307,6 +316,10 @@ int __far putchar(int c)
     return c;
 }
 
+/* Initialize the role selected by this project before foreground processing.
+ * Preserve clock, image/handoff and peripheral/IRQ enable order when adding application
+ * initialization.
+ */
 void hardware_init(void)
 {
     Can_RtnType can_result;

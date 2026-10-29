@@ -6,7 +6,7 @@ Includes
 /* Start user code for include. Do not edit comment generated here */
 #include "r_rl78_can_drv.h" /* Header file for CAN software driver */
 #include "r_rl78_can_sfr.h"
-#include "../can_transfer_protocol.h"
+#include "can_transfer_protocol.h"
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 

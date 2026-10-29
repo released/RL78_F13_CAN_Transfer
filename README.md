@@ -10,7 +10,7 @@ writing flash.
 - [This CAN Transfer benchmark](https://github.com/released/RL78_F13_CAN_Transfer).
 - [CAN Boot project](https://github.com/released/RL78_F13_Boot_loader_CAN).
 - [Matching CAN App project](https://github.com/released/RL78_F13_Boot_loader_CAN_app).
-- [Tool and bridge operating guide](https://released.github.io/slide_isp_tool_for_RL78/).
+- [Tool and bridge operating guide](https://released.github.io/slide_simple_renesas_isp_tool/).
 - [Boot/App porting guide](https://released.github.io/slide_boot_loader_for_RL78/#boot-app-porting).
 
 Transfer is the standalone non-destructive transport test, not the Boot/App
@@ -89,16 +89,6 @@ or timing stress measurements. Blocking text output at 115200 baud changes the
 target's main-loop timing and therefore must not be present in a performance
 measurement.
 
-## Build
-
-```powershell
-& 'C:\Program Files (x86)\Renesas Electronics\CS+\CC\CubeSuite+.exe' `
-  /br '.\RL78_F13_CAN_Transfer.mtpj'
-```
-
-Always inspect the final CS+ summary. A process exit code alone is not proof of
-a successful CC-RL build.
-
 ## User code entry
 
 `custom_func.c` provides `hardware_init()` for initialization and `loop()` for
@@ -107,3 +97,36 @@ these callbacks, retaining the existing communication service calls.
 The selected main/startup adapter owns entry and handoff. Generated peripheral
 files remain under `src/`; retain the project's MTPJ source selection when using
 Code Generator or Smart Configurator, then rebuild to validate the image and vectors.
+
+## Project layout and standalone build
+
+This project includes its own source files, configuration headers and build tools.
+A sibling Boot, App or Transfer checkout is not required to compile it.
+Keep the project directory name aligned with its `.mtpj` filename; remove a ZIP download suffix when necessary.
+Build with CS+ Rebuild, or run the local PowerShell entry:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
+```
+
+| Location | Responsibility |
+| --- | --- |
+| `custom_func.c` | Project initialization in `hardware_init()` and recurring work in `loop()`; runtime orchestration stays here |
+| `hal/can` | CAN service, controller driver and CAN adapter, when used by this project |
+| `hal/device` | Device, clock, peripheral and CPU handoff APIs |
+| `hal/image` | Metadata parser/profile, image validation and software CRC |
+| `hal/flash` | Flash access/geometry APIs, when required by the selected image |
+| `hal/isp` | Update/Transfer protocol and transport processing APIs |
+| Root configuration headers | Local MCU/Flash, handoff and communication contract |
+| `tools` and root PowerShell helpers | Local metadata/IRQ generation and linked-image checks |
+| `src` | Code Generator or Smart Configurator peripheral sources |
+
+Only the sources registered in this project's CS+ configuration are linked.
+Generated main/vector implementations must not become a second active entry.
+Retain the `custom_func.c` callbacks and the selected startup adapter after code generation.
+
+Boot and App each carry a local contract. Keep their MCU, Flash layout, image format,
+IRQ ABI, handoff and communication settings compatible when installing a pair.
+App releases are edited in `app_image_config.h` and `app_irq_handlers.h` in the App project.
+Rebuild the selected App to regenerate its metadata, vector table, update BIN and timing BINs.
+The App build does not read or rewrite a Boot checkout.
