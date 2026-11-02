@@ -40,6 +40,7 @@ status, bit rate, request/response IDs, exact receive filter, and transceiver
 standby pin state. A working initialization starts with output similar to:
 
 ```text
+F13 Custom Transfer: UART0 ready; starting CAN
 CAN init: OK result=0x0000 channel_status=<raw status>
 CAN config: Classical 500K request=0x710 response=0x711 filter=0x710/0x7FF STB=P12_LOW
 hardware_init finish
@@ -47,6 +48,19 @@ hardware_init finish
 
 `result=0x0000` is the initialization success condition. Preserve the actual
 raw channel status in the test record; do not compare it to the placeholder.
+The first line precedes CAN initialization. Its absence requires checking
+startup/clock execution and the UART0 connection; a CAN timeout alone cannot
+establish which of those failed.
+
+The controller has one standard-data receive rule for the configured Transfer
+request ID, routed to RX FIFO0. Boot control/block IDs are not Transfer traffic.
+CS+ pre-build validates the local Transfer configuration; post-build reads the
+actual map and programmer MOT to verify the linked filter table. The same
+checks can be run without connecting a board:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\verify_transfer_filter.ps1 -CheckImage
+```
 
 The CAN error ISR only captures and clears hardware flags. The main loop emits
 their decoded aggregate later, at most once per 250 ms while repeated flags are

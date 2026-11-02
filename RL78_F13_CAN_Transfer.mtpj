@@ -432,8 +432,10 @@ C:\Program Files (x86)\Renesas Electronics\CS+\CC\FAA\V1.04.02
       <OutputMessageFormat-0>%TargetFiles%</OutputMessageFormat-0>
       <FormatBuildOptionList-0>%TargetFiles% : %Program% %Options%</FormatBuildOptionList-0>
       <SetAllBuildModeValue-0>False</SetAllBuildModeValue-0>
-      <PreBuildCommands-0></PreBuildCommands-0>
-      <PostBuildCommands-0></PostBuildCommands-0>
+      <PreBuildCommands-0>powershell.exe -NoProfile -ExecutionPolicy Bypass -File "tools\verify_transfer_filter.ps1"
+</PreBuildCommands-0>
+      <PostBuildCommands-0>powershell.exe -NoProfile -ExecutionPolicy Bypass -File "tools\verify_transfer_filter.ps1" -CheckImage
+</PostBuildCommands-0>
       <GeneralOptionCpu-0>S3</GeneralOptionCpu-0>
       <GeneralOptionErrorFile-0>False</GeneralOptionErrorFile-0>
       <GeneralOptionMirrorArea-0>Maa0</GeneralOptionMirrorArea-0>

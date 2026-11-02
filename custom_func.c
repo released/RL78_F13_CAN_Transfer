@@ -333,6 +333,8 @@ void hardware_init(void)
 
     // RL78 F13 EVB - CAN transceiver PIN#8 , pull low
     P1_bit.no2 = 0;
+    /* Distinguish entry/UART readiness from a CAN initialization failure. */
+    printf("F13 Custom Transfer: UART0 ready; starting CAN\r\n");
     can_result = R_CAN_Create(); /* CAN, P1.0/CTXD0 and P1.1/CRXD0. */
     CAN_TransferProtocol_Init(can_result);
 
