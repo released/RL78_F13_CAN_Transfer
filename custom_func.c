@@ -10,6 +10,9 @@
 
 #include "misc_config.h"
 #include "custom_func.h"
+#define UART0_CONSOLE_RESET() RL78_soft_reset(1U)
+#define UART0_CONSOLE_OTHER(value) UARTx_Process(value)
+#include "uart0_reset_console.inc"
 #include "can_transfer_config.h"
 #include "can_transfer_protocol.h"
 
@@ -144,6 +147,8 @@ void loop(void)
 {
     // static unsigned int LOG1 = 0;
 
+
+    Uart0ResetPoll();
     if (Is_TIMER_PERIOD_1000MS_Trig())
     {
         reset_TIMER_PERIOD_1000MS();
@@ -327,7 +332,8 @@ void hardware_init(void)
 
     // const unsigned char indicator[] = "hardware_init";
     EI();            // BSP_EI();
-    R_UART0_Start(); // UART , P15 , P16
+    R_UART0_Start();
+    SRMK0 = 1U; /* UART0 console is serviced by the foreground loop. */ // UART , P15 , P16
     R_TAU0_Channel1_Start();
     R_INTC0_Start(); // BUTTON , P137
 
@@ -349,4 +355,5 @@ void hardware_init(void)
 
     // check_reset_source();
     printf("%s finish\r\n\r\n", __func__);
+    printf("UART0 console: z/Z reset\r\n");
 }
